@@ -10,11 +10,11 @@ export const AuthSlice=createSlice({
             state.token=action.payload
             localStorage.setItem('token',action.payload)
         },
-        removeToken(state){
+        removeAuthToken(state){
             state.token=null,
             localStorage.removeItem('token')
         }
     }
 })
-export const {token,setToken}=AuthSlice.actions;
+export const {token,setToken,removeAuthToken}=AuthSlice.actions;
 export default AuthSlice.reducer;

@@ -15,9 +15,13 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { MenuItem } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { useDispatch } from 'react-redux';
+import { removeAuthToken } from '../../../../feature/auth/AuthSlice';
+import PersonIcon from '@mui/icons-material/Person';
+import LockIcon from '@mui/icons-material/Lock';
 
 const drawerWidth = 240;
 
@@ -97,6 +101,13 @@ export default function Sidebar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const dispatch=useDispatch();
+  const navigate=useNavigate()
+  const handleLogout=()=>{
+    dispatch(removeAuthToken())
+    navigate('/')
+
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -122,6 +133,7 @@ export default function Sidebar() {
             <Box display="flex">
               <MenuItem >My account</MenuItem>
               <MenuItem >Profile</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
 
             </Box>
           </Box>
@@ -152,6 +164,47 @@ export default function Sidebar() {
                 <HomeIcon />
               </ListItemIcon>
               <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem  disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <LockIcon />
+              </ListItemIcon>
+              <ListItemText primary="Role And Permission" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem  disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText primary="User Management" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>
