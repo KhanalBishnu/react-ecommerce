@@ -15,13 +15,15 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { MenuItem } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { useDispatch } from 'react-redux';
 import { removeAuthToken } from '../../../../feature/auth/AuthSlice';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
+import { Link } from 'react-router-dom';
+import usePermissionCheck from '../../../../hook/usePermissionCheck';
 
 const drawerWidth = 240;
 
@@ -91,8 +93,15 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function Sidebar() {
+  const location = useLocation();
+  React.useEffect(()=>{
+    const path = location.pathname;
+    const lastSegment = path.substring(path.lastIndexOf('/') + 1);
+    setIsActive(lastSegment)
+  },[])
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const [isActive, setIsActive] = React.useState('Home');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -101,14 +110,25 @@ export default function Sidebar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const dispatch=useDispatch();
-  const navigate=useNavigate()
-  const handleLogout=()=>{
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const handleLogout = () => {
     dispatch(removeAuthToken())
     navigate('/')
 
   }
+  const handleActiveTab = (tab) => {
+    setIsActive(tab);
+  }
+  const {checkPermission}=usePermissionCheck();
+  const hasPermissionUserManagement=checkPermission('View|User Management')
+  const hasPermissionRolePermission=checkPermission('View|Role And Permission')
 
+  const navLinks=[
+    {to:'/dashboard', label:'Home',icon:<HomeIcon/> ,name:'dashboard'},
+    hasPermissionRolePermission &&{to:'/dashboard/role-permission', label:'Role and Permission',icon:<LockIcon/> ,name:'role-permission'},
+    hasPermissionUserManagement && { to:'/dashboard/user-management', label:'User Management',icon:<PersonIcon/>, name:'user-management'},
+  ].filter(Boolean);
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -146,67 +166,39 @@ export default function Sidebar() {
           </IconButton>
         </DrawerHeader>
         <List>
-          <ListItem  disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
+          {
+            navLinks.map((nav,i)=>(
+              <ListItem disablePadding sx={{ display: 'block' }} key={i}>
+              <ListItemButton
+              to={nav.to}
+                component={Link}
                 sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  backgroundColor: isActive ==nav.name? '#1976d2' : '', 
+                  '&:hover': {
+                    backgroundColor: isActive ==nav.name? '#1976d2':"",
+                  },
+                  color:isActive ==nav.name? 'white':''
+  
                 }}
+                onClick={() => handleActiveTab(nav.name)}
               >
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem  disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                <LockIcon />
-              </ListItemIcon>
-              <ListItemText primary="Role And Permission" sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem  disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                <PersonIcon />
-              </ListItemIcon>
-              <ListItemText primary="User Management" sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {nav.icon}
+                </ListItemIcon>
+                <ListItemText primary={nav.label} sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+            ))
+          }
         </List>
 
       </Drawer>

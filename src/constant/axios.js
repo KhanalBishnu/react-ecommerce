@@ -2,7 +2,7 @@ import axios from "axios";
 import API_URL from './Constant';
 import Swal from "sweetalert2";
 
-const token=localStorage.getItem('token');
+const token=JSON.parse(localStorage.getItem('token'))|| null;
 const api=axios.create({
     baseURL:API_URL.BASE_URL,
     headers:{
