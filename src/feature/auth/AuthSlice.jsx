@@ -8,7 +8,6 @@ export const AuthSlice=createSlice({
     reducers:{
         setToken(state,action){
             state.token=action.payload
-            localStorage.setItem('token',JSON.stringify(action.payload))
         },
         removeAuthToken(state){
             state.token=null,

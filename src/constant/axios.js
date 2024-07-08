@@ -2,12 +2,11 @@ import axios from "axios";
 import API_URL from './Constant';
 import Swal from "sweetalert2";
 
-const token=JSON.parse(localStorage.getItem('token'))|| null;
 const api=axios.create({
     baseURL:API_URL.BASE_URL,
     headers:{
         "Content-Type": "multipart/form-data",
-        'Authorization':`Bearer ${token}`,
+        'Authorization':`Bearer ${JSON.parse(localStorage.getItem('token'))|| null}`,
     }
 })
 // Add a request interceptor (optional, for adding tokens, etc.)

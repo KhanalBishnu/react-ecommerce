@@ -8,7 +8,9 @@ const API_URLS = {
   OwnPermission:`${BASE_URL}/permissions`,
 
   // user management url  
-  getUserManagementData:`${BASE_URL}/dashboard/user-management`
+  getUserManagementData:`${BASE_URL}/dashboard/user-management`,
+  getUserManagementDataStore:`${BASE_URL}/dashboard/user-management/store`,
+  getUserManagementDataUpdate:`${BASE_URL}/dashboard/user-management/update`,
 };
 
 export default API_URLS;

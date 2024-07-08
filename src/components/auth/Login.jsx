@@ -46,9 +46,9 @@ export default function Login() {
       setLoading(true);
       const response=await postData(API_URL.LOGIN,formData,setLoading)
       if(response.response){
+        localStorage.setItem('token',JSON.stringify(response.token));
         dispatch(setToken(response.token));
         dispatch(setPermission(response.userPermission))
-        localStorage.setItem('token',JSON.stringify(response.token));
         navigate('/dashboard/home')
 
       }else{
