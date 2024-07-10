@@ -2,39 +2,40 @@ import { Password } from '@mui/icons-material'
 import React, { useState } from 'react'
 import { postData } from '../../../../constant/axios'
 import API_URLS from '../../../../constant/Constant'
+import { Button } from '@mui/material'
 
-function UserManagementForm({isUpdate,updatedData}) {
-    const [formData,setFormData]=useState({
-        name:isUpdate?updatedData.name:'',
-        email:isUpdate?updatedData.email:'',
+function UserManagementForm({ isUpdate, updatedData }) {
+    const [formData, setFormData] = useState({
+        name: isUpdate ? updatedData.name : '',
+        email: isUpdate ? updatedData.email : '',
     })
-    const [errors,setErrors]=useState({})
-    const handleChange=(e)=>{
-        const {name,value}=e.target;
-        setFormData({...formData,[name]:value})
+    const [errors, setErrors] = useState({})
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value })
     }
-    const handleSubmit=async ()=>{
-        let newErros={};
-        if(!!!formData.name){
-            newErros.name='required'
+    const handleSubmit = async () => {
+        let newErros = {};
+        if (!!!formData.name) {
+            newErros.name = 'required'
         }
-        if(!!!formData.email){
-            newErros.email='required'
+        if (!!!formData.email) {
+            newErros.email = 'required'
         }
         setErrors(newErros);
-        if(Object.keys(newErros).length==0){
-             
-            if(isUpdate){
-                setFormData({...formData,[id]:updatedData.id})
+        if (Object.keys(newErros).length == 0) {
+
+            if (isUpdate) {
+                setFormData({ ...formData, [id]: updatedData.id })
             }
-            const response=postData(isUpdate?API_URLS.getUserManagementDataUpdate:API_URLS.getUserManagementDataStore,formData,)
+            const response = postData(isUpdate ? API_URLS.getUserManagementDataUpdate : API_URLS.getUserManagementDataStore, formData,)
 
         }
     }
 
 
     return (
-        
+
         <form >
             <div className="illustration">
                 <i className="icon ion-ios-navigate"></i>
@@ -83,14 +84,18 @@ function UserManagementForm({isUpdate,updatedData}) {
                     }
                 </select>
             </div> */}
-            <div className="row d-flex justify-content-end mt-4">
-                <div className="col-lg-3  col-md-4 col-sm-5 d-flex gap-1">
-                    <a className='btn btn-primary' onClick={handleSubmit}>Submit</a>
-                    <a className='btn btn-danger'>Cancel</a>
+            <div className=" form-group d-flex justify-content-end mt-4">
+                <div className="d-flex gap-1">
+                    <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ mr: 1 }}>
+                        Submit
+                    </Button>
+                    <Button variant="outlined">
+                        Cancel
+                    </Button>
                 </div>
 
             </div>
-            
+
         </form>
     )
 }
