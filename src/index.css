@@ -30,3 +30,8 @@ a{
   font-weight: bold; /* Message font weight */
   width: 100%;
 }   
+
+/* swal  */
+.swal2-center{
+  z-index: 9999;
+}

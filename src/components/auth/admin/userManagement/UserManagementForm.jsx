@@ -1,10 +1,12 @@
 import { Password } from '@mui/icons-material'
 import React, { useState } from 'react'
-import { postData } from '../../../../constant/axios'
+import { getData, postData } from '../../../../constant/axios'
 import API_URLS from '../../../../constant/Constant'
-import { Button } from '@mui/material'
+import { Button, TextField } from '@mui/material'
+import { SwalMessage } from '../../../swal/SwalMessage'
 
-function UserManagementForm({ isUpdate, updatedData }) {
+function UserManagementForm({ isUpdate, updatedData, handleCloseModal, isDelete, setLoading, getUserManagementList, loading }) {
+    const [btnSpinner, setBtnSpinner] = useState(false)
     const [formData, setFormData] = useState({
         name: isUpdate ? updatedData.name : '',
         email: isUpdate ? updatedData.email : '',
@@ -24,12 +26,45 @@ function UserManagementForm({ isUpdate, updatedData }) {
         }
         setErrors(newErros);
         if (Object.keys(newErros).length == 0) {
-
+            let newFormData = formData;
             if (isUpdate) {
-                setFormData({ ...formData, [id]: updatedData.id })
+                newFormData = { ...formData, id: updatedData.id }
             }
-            const response = postData(isUpdate ? API_URLS.getUserManagementDataUpdate : API_URLS.getUserManagementDataStore, formData,)
+            try {
+                setBtnSpinner(true)
+                const response = await postData(isUpdate ? API_URLS.getUserManagementDataUpdate : API_URLS.getUserManagementDataStore, newFormData, setLoading);
+                if (response.response) {
+                    handleCloseModal()
+                    SwalMessage('Success', response.message, 'success');
+                    getUserManagementList()
+                    setBtnSpinner(false)
+                    handleCloseModal()
+                } else {
+                    SwalMessage('Error', response.message, 'error');
+                    setBtnSpinner(false);
+                }
+            } catch (error) {
+                setBtnSpinner(false);
+                SwalMessage('Error', error.message, 'error');
+            }
+        }
+    }
+    const handleDelete = async (userId) => {
+        try {
+            const response = await getData(`${API_URLS.getUserManagementDataDelete}/${userId}`, setLoading);
+            if (response.response) {
+                SwalMessage('Success', response.message, 'success');
+                getUserManagementList()
+                setLoading(false)
+                handleCloseModal()
+            } else {
+                setLoading(false);
+                SwalMessage('Error', response.message, 'error');
+            }
 
+        } catch (error) {
+            setLoading(false);
+            SwalMessage('Error', error.message, 'error');
         }
     }
 
@@ -37,31 +72,41 @@ function UserManagementForm({ isUpdate, updatedData }) {
     return (
 
         <form >
-            <div className="illustration">
-                <i className="icon ion-ios-navigate"></i>
-            </div>
-            <div className="form-group my-2 py-1">
-                <label htmlFor="name">Name<sup className="text-danger">*</sup></label>
-                <input
-                    className={`form-control rounded ${errors.name ? 'border border-danger' : ''}`}
-                    type="text"
-                    name="name"
-                    placeholder="Enter Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                />
-            </div>
-            <div className="form-group my-2 py-1">
-                <label htmlFor="email">Email<sup className="text-danger">*</sup></label>
-                <input
-                    className={`form-control rounded ${errors.email ? 'border border-danger' : ''}`}
-                    type="email"
-                    name="email"
-                    placeholder="Enter Email"
-                    onChange={handleChange}
-                    value={formData.email}
-                />
-            </div>
+            {
+                isDelete ? <h6>Are you sure?</h6> : <>
+                    <div className="illustration">
+                        <i className="icon ion-ios-navigate"></i>
+                    </div>
+                    <div className="form-group my-2 py-1">
+                        {/* <label htmlFor="name">Name<sup className="text-danger">*</sup></label>
+                        <input
+                            className={`form-control rounded ${errors.name ? 'border border-danger' : ''}`}
+                            type="text"
+                            name="name"
+                            placeholder="Enter Name"
+                            value={formData.name}
+                            onChange={handleChange}
+                        /> */}
+                          <TextField required className={`form-control rounded w-100' ${errors.name ? 'border border-danger' : ''}`}
+                         id="outlined-basic" type='text' label="Name" variant="outlined" name='name' onChange={handleChange}
+                            value={formData.name}  />
+                    </div>
+                    <div className="form-group my-2 py-1">
+                        {/* <label htmlFor="email">Email<sup className="text-danger">*</sup></label> */}
+                        {/* <input
+                            className={`form-control rounded ${errors.email ? 'border border-danger' : ''}`}
+                            type="email"
+                            name="email"
+                            placeholder="Enter Email"
+                            onChange={handleChange}
+                            value={formData.email}
+                        /> */}
+                        <TextField required className={`form-control rounded w-100' ${errors.email ? 'border border-danger' : ''}`} id="outlined-basic" type='email' label="Email" variant="outlined" name='email' onChange={handleChange}
+                            value={formData.email}  />
+
+                    </div>
+                </>
+            }
 
             {/* <div className="form-group my-2 py-1">
                 <label htmlFor="confirm_password">Photo</label>
@@ -86,12 +131,14 @@ function UserManagementForm({ isUpdate, updatedData }) {
             </div> */}
             <div className=" form-group d-flex justify-content-end mt-4">
                 <div className="d-flex gap-1">
-                    <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ mr: 1 }}>
-                        Submit
-                    </Button>
-                    <Button variant="outlined">
+                    <Button onClick={handleCloseModal} variant="outlined">
                         Cancel
                     </Button>
+                    <Button variant="contained" color={isDelete ? 'error' : 'primary'} onClick={isDelete ? () => handleDelete(updatedData) : handleSubmit} sx={{ mr: 1 }}>
+                        {isDelete ? (btnSpinner ? 'Confirming...' : 'Confirm') : (btnSpinner ? 'Submitting...' : 'Submit')}
+                    </Button>
+
+
                 </div>
 
             </div>

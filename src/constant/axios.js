@@ -67,7 +67,7 @@ export const getData = async (url, setLoading) => {
     return response.data;
   } catch (error) {
     setLoading(false);
-    throw new Error(`GET request failed: ${error.message}`);
+    throw new Error(error.message);
   }
 };
 
