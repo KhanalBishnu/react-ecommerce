@@ -7,7 +7,7 @@ import ModalComponent from '../../../modal/ModalComponent'
 import UserManagementForm from './UserManagementForm'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { Button } from '@mui/material'
+import { Button, FormControl, InputLabel, MenuItem, Pagination, Select, Stack } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -17,7 +17,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { StyledTableRow, StyledTableCell } from '../../../table/MUITable'
 import MUIModal from '../../../modal/MUIModal'
-import Pagination from '../../../pagination/Pagination'
 import CustomPagination from '../../../pagination/CustomPagination'
 
 function UserData() {
@@ -28,9 +27,9 @@ function UserData() {
     const [isDelete, setIsDelete] = useState(false)
     const [updatedData, setUpdatedData] = useState(null)
     // pagination 
-    const [page, setPage] = useState(1)
+    const [currentPage, setCurrentPage] = useState(1)
     const [paginatedValue, setPaginatedValue] = useState(10)
-    const [totalData, setTotalData] = useState(null)
+    const [totalPages, setTotalPages] = useState(null)
 
 
     const handleCloseModal = () => {
@@ -54,32 +53,46 @@ function UserData() {
         setUpdatedData(userId);
 
     }
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+        getUserManagementList(value, paginatedValue)
+    };
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage((prevPage) => prevPage + 1);
+        }
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage((prevPage) => prevPage - 1);
+        }
+    };
+    const handleItemsPerPageChange = (event) => {
+        setPaginatedValue(event.target.value);
+        setCurrentPage(1);
+        getUserManagementList(1, event.target.value)
     };
     useEffect(() => {
-        getUserManagementList()
-    }, [])
-    const getUserManagementList = async () => {
+        getUserManagementList(currentPage,paginatedValue)
+    }, [currentPage])
+    const getUserManagementList = async (page, paginatedValue) => {
         try {
             setLoading(true)
-            const response = await postData(API_URLS.getUserManagementData,{page:page,paginatedValue:paginatedValue}, setLoading);
+            const response = await postData(API_URLS.getUserManagementData, { page: page, paginatedValue: paginatedValue }, setLoading);
             if (response.response) {
                 setUserData(response.data.users);
                 setLoading(false);
-                setTotalData(response.data.total);
+                setTotalPages(Math.ceil(response.data.total / paginatedValue));
             } else {
                 SwalMessage('Error', response.message || 'Something went Wrong!', 'error')
                 setLoading(false)
             }
-
         } catch (error) {
             SwalMessage('Error', error.message || 'Something went Wrong!', 'error')
             setLoading(false)
         }
     }
-
-
     return (
         <div className="container-fluid">
             {
@@ -91,7 +104,6 @@ function UserData() {
                                     Add
                                 </Button>
                                 <MUIModal />
-
                             </div>
                         </div>
                         <TableContainer component={Paper}>
@@ -126,7 +138,6 @@ function UserData() {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                       
                         <MUIModal
                             showModal={showModal}
                             header={isDelete ? 'Delete User' : (isUpdate ? 'Edit User' : 'Add User')}
@@ -139,12 +150,39 @@ function UserData() {
                                 setLoading={setLoading}
                                 loading={loading}
                                 getUserManagementList={getUserManagementList}
-                                />}
+                            />}
                             loading={loading}
                         />
                         <div className="d-flex justify-content-center align-items-center">
-
-                        <CustomPagination currentPage={page} totalPages={totalData} onPageChange={handlePageChange} limit={paginatedValue}/>
+                            <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 4 }}>
+                                {/* <Button variant="contained" onClick={handlePrevPage} disabled={currentPage === 1}>
+                                    Previous
+                                </Button> */}
+                                {/* <CustomPagination currentPage={page} totalPages={totalData} onPageChange={handlePageChange} limit={paginatedValue} /> */}
+                                <Pagination
+                                    count={totalPages}
+                                    page={currentPage}
+                                    onChange={handlePageChange}
+                                    color="primary"
+                                />
+                                {/* <Button variant="contained" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                                    Next
+                                </Button> */}
+                            <FormControl sx={{ mt: 2, minWidth: 120,height:60 }}>
+                                <InputLabel>Items per page</InputLabel>
+                                <Select
+                                    value={paginatedValue}
+                                    onChange={handleItemsPerPageChange}
+                                    label="Items per page"
+                                >
+                                    <MenuItem value={5}>5</MenuItem>
+                                    <MenuItem value={10}>10</MenuItem>
+                                    <MenuItem value={20}>20</MenuItem>
+                                    <MenuItem value={50}>50</MenuItem>
+                                </Select>
+                            </FormControl>
+                            </Stack>
+                            {/* <CustomPagination currentPage={page} totalPages={totalData} onPageChange={handlePageChange} limit={paginatedValue} /> */}
                         </div>
                     </>
             }
