@@ -74,9 +74,9 @@ function UserData() {
         getUserManagementList(1, event.target.value)
     };
     useEffect(() => {
-        getUserManagementList(currentPage,paginatedValue)
+        getUserManagementList(currentPage, paginatedValue)
     }, [currentPage])
-    const getUserManagementList = async (page, paginatedValue) => {
+    const getUserManagementList = async (page=1, paginatedValue=10) => {
         try {
             setLoading(true)
             const response = await postData(API_URLS.getUserManagementData, { page: page, paginatedValue: paginatedValue }, setLoading);
@@ -155,34 +155,28 @@ function UserData() {
                         />
                         <div className="d-flex justify-content-center align-items-center">
                             <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 4 }}>
-                                {/* <Button variant="contained" onClick={handlePrevPage} disabled={currentPage === 1}>
-                                    Previous
-                                </Button> */}
-                                {/* <CustomPagination currentPage={page} totalPages={totalData} onPageChange={handlePageChange} limit={paginatedValue} /> */}
                                 <Pagination
                                     count={totalPages}
                                     page={currentPage}
                                     onChange={handlePageChange}
                                     color="primary"
                                 />
-                                {/* <Button variant="contained" onClick={handleNextPage} disabled={currentPage === totalPages}>
-                                    Next
-                                </Button> */}
-                            <FormControl sx={{ mt: 2, minWidth: 120,height:60 }}>
-                                <InputLabel>Items per page</InputLabel>
-                                <Select
-                                    value={paginatedValue}
-                                    onChange={handleItemsPerPageChange}
-                                    label="Items per page"
-                                >
-                                    <MenuItem value={5}>5</MenuItem>
-                                    <MenuItem value={10}>10</MenuItem>
-                                    <MenuItem value={20}>20</MenuItem>
-                                    <MenuItem value={50}>50</MenuItem>
-                                </Select>
-                            </FormControl>
+
+                                <FormControl sx={{ mt: 2, minWidth: 120, '& .MuiInputBase-root': { height: 36 } }}>
+                                    <InputLabel>Items per page</InputLabel>
+                                    <Select
+                                        value={paginatedValue}
+                                        onChange={handleItemsPerPageChange}
+                                        label="Items per page"
+                                        sx={{ height: 36 }}
+                                    >
+                                        <MenuItem value={5} sx={{ height: 30 }}>5</MenuItem>
+                                        <MenuItem value={10} sx={{ height: 30 }}>10</MenuItem>
+                                        <MenuItem value={20} sx={{ height: 30 }}>20</MenuItem>
+                                        <MenuItem value={50} sx={{ height: 30 }}>50</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Stack>
-                            {/* <CustomPagination currentPage={page} totalPages={totalData} onPageChange={handlePageChange} limit={paginatedValue} /> */}
                         </div>
                     </>
             }
