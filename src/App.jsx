@@ -14,6 +14,9 @@ import { SwalMessage } from './components/swal/SwalMessage'
 import Spinner from './components/spinner/Spinner'
 import UserData from './components/auth/admin/userManagement/UserData'
 import RolePermissionData from './components/auth/admin/roleAndPermission/RolePermissionData'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   // after refresh get all auth user permission 
   const token = useSelector((state) => state.auth.token)
@@ -51,7 +54,8 @@ function App() {
 
   }
   return (
-
+<>
+<ToastContainer/>
     <Routes>
       <Route path='/' element={<Login />} />
       <Route path='/login' element={<Login />} />
@@ -65,6 +69,7 @@ function App() {
         </Route>
       </Route>
     </Routes>
+    </>
   )
 }
 

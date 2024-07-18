@@ -4,6 +4,7 @@ import { getData, postData } from '../../../../constant/axios'
 import API_URLS from '../../../../constant/Constant'
 import { Button, TextField } from '@mui/material'
 import { SwalMessage } from '../../../swal/SwalMessage'
+import { toast } from 'react-toastify'
 // import MUIAlert, { alertMUI } from '../../../swal/MUIAlert'
 
 function UserManagementForm({ isUpdate, updatedData, handleCloseModal, isDelete, setLoading, getUserManagementList, loading }) {
@@ -36,12 +37,10 @@ function UserManagementForm({ isUpdate, updatedData, handleCloseModal, isDelete,
                 const response = await postData(isUpdate ? API_URLS.getUserManagementDataUpdate : API_URLS.getUserManagementDataStore, newFormData, setLoading);
                 if (response.response) {
                     handleCloseModal()
-                    // <MUIAlert message={response.message} />
-                    // alertMUI(response.message)
-                    SwalMessage('Success', response.message, 'success');
                     getUserManagementList()
                     setBtnSpinner(false)
                     handleCloseModal()
+                    toast.success(response.message)  
                 } else {
                     SwalMessage('Error', response.message, 'error');
                     setBtnSpinner(false);
@@ -56,7 +55,7 @@ function UserManagementForm({ isUpdate, updatedData, handleCloseModal, isDelete,
         try {
             const response = await getData(`${API_URLS.getUserManagementDataDelete}/${userId}`, setLoading);
             if (response.response) {
-                SwalMessage('Success', response.message, 'success');
+                toast.success(response.message)
                 getUserManagementList()
                 setLoading(false)
                 handleCloseModal()
@@ -64,14 +63,11 @@ function UserManagementForm({ isUpdate, updatedData, handleCloseModal, isDelete,
                 setLoading(false);
                 SwalMessage('Error', response.message, 'error');
             }
-
         } catch (error) {
             setLoading(false);
             SwalMessage('Error', error.message, 'error');
         }
     }
-
-
     return (
 
         <form >
