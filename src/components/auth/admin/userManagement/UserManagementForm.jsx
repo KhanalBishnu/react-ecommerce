@@ -7,7 +7,7 @@ import { SwalMessage } from '../../../swal/SwalMessage'
 import { toast } from 'react-toastify'
 // import MUIAlert, { alertMUI } from '../../../swal/MUIAlert'
 
-function UserManagementForm({ isUpdate, updatedData, handleCloseModal, isDelete, setLoading, getUserManagementList, loading }) {
+function UserManagementForm({ isUpdate, updatedData, handleCloseModal, isDelete, setLoading, getUserManagementList, currentPage,paginatedValue }) {
     const [btnSpinner, setBtnSpinner] = useState(false)
     const [formData, setFormData] = useState({
         name: isUpdate ? updatedData.name : '',
@@ -37,7 +37,7 @@ function UserManagementForm({ isUpdate, updatedData, handleCloseModal, isDelete,
                 const response = await postData(isUpdate ? API_URLS.getUserManagementDataUpdate : API_URLS.getUserManagementDataStore, newFormData, setLoading);
                 if (response.response) {
                     handleCloseModal()
-                    getUserManagementList()
+                    getUserManagementList(currentPage,paginatedValue)
                     setBtnSpinner(false)
                     handleCloseModal()
                     toast.success(response.message)  
@@ -56,7 +56,7 @@ function UserManagementForm({ isUpdate, updatedData, handleCloseModal, isDelete,
             const response = await getData(`${API_URLS.getUserManagementDataDelete}/${userId}`, setLoading);
             if (response.response) {
                 toast.success(response.message)
-                getUserManagementList()
+                getUserManagementList(currentPage, paginatedValue)
                 setLoading(false)
                 handleCloseModal()
             } else {

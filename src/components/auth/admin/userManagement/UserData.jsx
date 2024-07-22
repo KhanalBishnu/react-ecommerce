@@ -150,6 +150,8 @@ function UserData() {
                                 setLoading={setLoading}
                                 loading={loading}
                                 getUserManagementList={getUserManagementList}
+                                currentPage={currentPage}
+                                paginatedValue={paginatedValue}
                             />}
                             loading={loading}
                         />
