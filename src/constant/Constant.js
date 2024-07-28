@@ -12,6 +12,10 @@ const API_URLS = {
   getUserManagementDataStore:`${BASE_URL}/dashboard/user-management/store`,
   getUserManagementDataUpdate:`${BASE_URL}/dashboard/user-management/update`,
   getUserManagementDataDelete:`${BASE_URL}/dashboard/user-management/delete`,
+
+  //role and permissions
+  getRoleAndPermissionData:`${BASE_URL}/dashboard/role-and-permission`,
+  getRolePermission:`${BASE_URL}/dashboard/role-and-permission/getRolePermission`,
 };
 
 export default API_URLS;
