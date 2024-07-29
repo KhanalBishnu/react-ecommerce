@@ -18,6 +18,7 @@ import MUIModal from '../../../modal/MUIModal';
 import UserManagementForm from '../userManagement/UserManagementForm';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ViewRolePermissionList from './ViewRolePermissionList';
+import RoleAndPermissionForm from './RoleAndPermissionForm';
 
 const RolePermissionData = () => {
     const [loading, setLoading] = useState(false);
@@ -44,15 +45,22 @@ const RolePermissionData = () => {
         setShowModal(true);
     }, []);
 
-    const handleAddUser = useCallback(() => {
-        setIsUpdate(false);
-        setShowModal(true);
+    const handleAddUser = useCallback(async() => {
+        try {
+            const res=await getData(`${API_URLS.allPermissionList}`,setLoading);
+            const data=res.data;
+            setAllPermission(data)
+            setIsUpdate(false);
+            setShowModal(true);    
+        } catch (error) {
+            console.error('Failed to fetch permissions:', error);
+        }
     }, []);
 
-    const handleDelete = useCallback((userId) => {
+    const handleDelete = useCallback((roleId) => {
         setShowModal(true);
         setIsDelete(true);
-        setUpdatedData(userId);
+        setUpdatedData(roleId);
     }, []);
 
     const handlePageChange = useCallback((event, value) => {
@@ -68,9 +76,9 @@ const RolePermissionData = () => {
     }, []);
 
     //permission 
-    const [rolePermissions,setRolePermissions]=useState([]);
-    const [isRolePermissionList,setIsRolePermissionList]=useState(false);
-    const handleViewRolePermission=()=>{
+    const [rolePermissions, setRolePermissions] = useState([]);
+    const [isRolePermissionList, setIsRolePermissionList] = useState(false);
+    const handleViewRolePermission = () => {
         setIsUpdate(false);
         setShowModal(true);
         setIsRolePermissionList(true);
@@ -97,11 +105,10 @@ const RolePermissionData = () => {
         getRolePermissionList(currentPage, paginatedValue);
     }, [currentPage, paginatedValue, getRolePermissionList]);
 
-//role permission list
+    //role permission list
     const handlePermissionListView = async (roleId) => {
         try {
-  
-            const res = await getData(`${API_URLS.getRolePermission}/${roleId}`,setLoading);
+            const res = await getData(`${API_URLS.getRolePermission}/${roleId}`, setLoading);
             const data = res.data;
             debugger
             setRolePermissions(data);
@@ -111,6 +118,34 @@ const RolePermissionData = () => {
         }
     };
 
+    //edit role 
+    const [allPermission,setAllPermission]=useState([]);
+    const [selectedPermissions, setSelectedPermissions] = useState([]);
+    const [currentRole, setCurrentRole] = useState(null);
+    const handleCheckboxChange = (event, permissionId) => {
+        const { checked } = event.target;
+    
+        if (checked) {
+            setSelectedPermissions(prevState => [...prevState, permissionId]);
+        } else {
+            setSelectedPermissions(prevState => prevState.filter(id => id!== permissionId));
+        }
+        
+    };
+    const editRolePermission= async (role)=>{
+        try {
+            const res=await getData(`${API_URLS.getPermissionList}/${role.id}`,setLoading);
+            const data=res.data;
+            setAllPermission(data.modules)
+            setSelectedPermissions(data.permissionIds);
+            setIsUpdate(true);
+            setShowModal(true);
+            setCurrentRole(role.name)
+            setIsRolePermissionList(false)
+        } catch (error) {
+            console.error('Failed to fetch permissions:', error);
+        }
+    }
     return (
         <div className="container-fluid">
             {loading ? <Spinner content="Loading..." /> : (
@@ -138,12 +173,12 @@ const RolePermissionData = () => {
                                         <StyledTableCell component="th" scope="row">{i + 1}</StyledTableCell>
                                         <StyledTableCell align="right">{role.name}</StyledTableCell>
                                         <StyledTableCell align="right">
-                                        <Button onClick={()=>handlePermissionListView(role.id)}sx={{ marginBottom: '3px ' }} variant="outlined" color="primary" startIcon={<VisibilityIcon/>}>
-                                View
-                            </Button>
+                                            <Button onClick={() => handlePermissionListView(role.id)} sx={{ marginBottom: '3px ' }} variant="outlined" color="primary" startIcon={<VisibilityIcon />}>
+                                                View
+                                            </Button>
                                         </StyledTableCell>
                                         <StyledTableCell align="right">
-                                            <Button onClick={() => handleEditUser(role)} sx={{ marginRight: "2px" }} variant="outlined" startIcon={<EditIcon />}>
+                                            <Button onClick={() => editRolePermission(role)} sx={{ marginRight: "2px" }} variant="outlined" startIcon={<EditIcon />}>
                                                 Edit
                                             </Button>
                                             <Button variant="outlined" onClick={() => handleDelete(role.id)} color="error" startIcon={<DeleteIcon />}>
@@ -157,20 +192,23 @@ const RolePermissionData = () => {
                     </TableContainer>
                     <MUIModal
                         showModal={showModal}
-                        header={isRolePermissionList?'Permission List':(isDelete ? 'Delete User' : (isUpdate ? 'Edit User' : 'Add User'))}
+                        header={isRolePermissionList ? 'Permission List' : (isDelete ? 'Delete User' : (isUpdate ? 'Edit User' : 'Add User'))}
                         handleCloseModal={handleCloseModal}
-                        modalBody={isRolePermissionList?<ViewRolePermissionList
+                        modalBody={isRolePermissionList ? <ViewRolePermissionList
                             rolePermissions={rolePermissions}
-                        />:<UserManagementForm
+                        /> : <RoleAndPermissionForm
                             isDelete={isDelete}
                             isUpdate={isUpdate}
-                            updatedData={updatedData}
+                            allPermission={allPermission}
                             handleCloseModal={handleCloseModal}
                             setLoading={setLoading}
                             loading={loading}
                             getRolePermissionList={getRolePermissionList}
                             currentPage={currentPage}
                             paginatedValue={paginatedValue}
+                            selectedPermissions={selectedPermissions}
+                            setSelectedPermissions={setSelectedPermissions}
+                            currentRole={currentRole}
                         />}
                         loading={loading}
                     />
