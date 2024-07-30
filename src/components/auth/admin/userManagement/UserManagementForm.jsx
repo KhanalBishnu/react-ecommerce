@@ -77,57 +77,17 @@ function UserManagementForm({ isUpdate, updatedData, handleCloseModal, isDelete,
                         <i className="icon ion-ios-navigate"></i>
                     </div>
                     <div className="form-group my-2 py-1">
-                        {/* <label htmlFor="name">Name<sup className="text-danger">*</sup></label>
-                        <input
-                            className={`form-control rounded ${errors.name ? 'border border-danger' : ''}`}
-                            type="text"
-                            name="name"
-                            placeholder="Enter Name"
-                            value={formData.name}
-                            onChange={handleChange}
-                        /> */}
                           <TextField required className={`form-control rounded w-100' ${errors.name ? 'border border-danger' : ''}`}
                          id="outlined-basic" type='text' label="Name" variant="outlined" name='name' onChange={handleChange}
                             value={formData.name}  />
                     </div>
                     <div className="form-group my-2 py-1">
-                        {/* <label htmlFor="email">Email<sup className="text-danger">*</sup></label> */}
-                        {/* <input
-                            className={`form-control rounded ${errors.email ? 'border border-danger' : ''}`}
-                            type="email"
-                            name="email"
-                            placeholder="Enter Email"
-                            onChange={handleChange}
-                            value={formData.email}
-                        /> */}
                         <TextField required className={`form-control rounded w-100' ${errors.email ? 'border border-danger' : ''}`} id="outlined-basic" type='email' label="Email" variant="outlined" name='email' onChange={handleChange}
                             value={formData.email}  />
 
                     </div>
                 </>
             }
-
-            {/* <div className="form-group my-2 py-1">
-                <label htmlFor="confirm_password">Photo</label>
-                <input
-                    className={`form-control rounded ${errors.file ? 'border border-danger' : ''}`}
-                    type="file"
-                    name="file"
-                    onChange={handleChange}
-                />
-                {errors.file && <span className='text-danger'>{errors.file}</span>}
-            </div> */}
-            {/* <div className="form-group my-2 py-1">
-                <label htmlFor="">Select Role</label>
-                <select name="roleId" className='form-control' id="" onChange={handleChange} >
-                    <option value="">Choose Role</option>
-                    {
-                        allRoles?.map((role) => (
-                            <option key={role.id} value={role.id}>{role.name}</option>
-                        ))
-                    }
-                </select>
-            </div> */}
             <div className=" form-group d-flex justify-content-end mt-4">
                 <div className="d-flex gap-1">
                     <Button onClick={handleCloseModal} variant="outlined">

@@ -18,7 +18,9 @@ const API_URLS = {
   getRolePermission:`${BASE_URL}/dashboard/role-and-permission/getRolePermission`,
   getPermissionList:`${BASE_URL}/dashboard/role-and-permission/getPermissionList`,
   rolePermissionDelete:`${BASE_URL}/dashboard/role-and-permission/delete`,
-  allPermissionList:`${BASE_URL}/dashboard/role-and-permission/allPermissionList `,
+  allPermissionList:`${BASE_URL}/dashboard/role-and-permission/allPermissionList`,
+  storeRoleAndPermission:`${BASE_URL}/dashboard/role-and-permission/store`,
+  updateRoleAndPermission:`${BASE_URL}/dashboard/role-and-permission/update`,
 };
 
 export default API_URLS;

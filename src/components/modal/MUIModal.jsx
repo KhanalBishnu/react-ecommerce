@@ -46,7 +46,7 @@ const CustomBackdrop = styled(Backdrop)({
     backgroundColor: '#8b9ab9cc', // Darker background color when modal is open
   });
 
-export default function MUIModal({showModal,handleCloseModal,modalBody,loading, header}) {
+export default function MUIModal({showModal,handleCloseModal,modalBody,loading, header,isDelete=false}) {
   return (
     <div>
       
@@ -62,7 +62,16 @@ export default function MUIModal({showModal,handleCloseModal,modalBody,loading, 
          }}
       >
         <Fade in={showModal}>
-          <Box sx={style}>
+          <Box sx={{  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: isDelete?'45%':"70%",
+  bgcolor: 'background.paper',
+  border: 'none',
+  boxShadow: 24,
+  borderRadius: '8px',
+  overflow: 'hidden'}}>
             <Header>
               <Typography id="transition-modal-title" variant="h6" component="h5">
                 {header}

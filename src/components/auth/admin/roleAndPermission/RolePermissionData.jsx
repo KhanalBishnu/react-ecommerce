@@ -50,17 +50,22 @@ const RolePermissionData = () => {
             const res=await getData(`${API_URLS.allPermissionList}`,setLoading);
             const data=res.data;
             setAllPermission(data)
-            setIsUpdate(false);
-            setShowModal(true);    
         } catch (error) {
             console.error('Failed to fetch permissions:', error);
         }
+        setSelectedPermissions([])
+        setIsUpdate(false);
+        setShowModal(true);    
+        setIsDelete(false);
+        setRolePermissions(false)
+        setIsRolePermissionList(false)
+
     }, []);
 
-    const handleDelete = useCallback((roleId) => {
+    const handleDelete = useCallback((role) => {
         setShowModal(true);
         setIsDelete(true);
-        setUpdatedData(roleId);
+        setCurrentRole(role)
     }, []);
 
     const handlePageChange = useCallback((event, value) => {
@@ -110,7 +115,6 @@ const RolePermissionData = () => {
         try {
             const res = await getData(`${API_URLS.getRolePermission}/${roleId}`, setLoading);
             const data = res.data;
-            debugger
             setRolePermissions(data);
             handleViewRolePermission();
         } catch (error) {
@@ -140,7 +144,7 @@ const RolePermissionData = () => {
             setSelectedPermissions(data.permissionIds);
             setIsUpdate(true);
             setShowModal(true);
-            setCurrentRole(role.name)
+            setCurrentRole(role)
             setIsRolePermissionList(false)
         } catch (error) {
             console.error('Failed to fetch permissions:', error);
@@ -181,7 +185,7 @@ const RolePermissionData = () => {
                                             <Button onClick={() => editRolePermission(role)} sx={{ marginRight: "2px" }} variant="outlined" startIcon={<EditIcon />}>
                                                 Edit
                                             </Button>
-                                            <Button variant="outlined" onClick={() => handleDelete(role.id)} color="error" startIcon={<DeleteIcon />}>
+                                            <Button variant="outlined" onClick={() => handleDelete(role)} color="error" startIcon={<DeleteIcon />}>
                                                 Delete
                                             </Button>
                                         </StyledTableCell>
@@ -191,8 +195,9 @@ const RolePermissionData = () => {
                         </Table>
                     </TableContainer>
                     <MUIModal
+                        isDelete={isDelete}
                         showModal={showModal}
-                        header={isRolePermissionList ? 'Permission List' : (isDelete ? 'Delete User' : (isUpdate ? 'Edit User' : 'Add User'))}
+                        header={isRolePermissionList ? 'Permission List' : (isDelete ? 'Delete Role' : (isUpdate ? 'Edit Role' : 'Add Role'))}
                         handleCloseModal={handleCloseModal}
                         modalBody={isRolePermissionList ? <ViewRolePermissionList
                             rolePermissions={rolePermissions}
