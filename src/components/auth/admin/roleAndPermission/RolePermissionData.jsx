@@ -15,7 +15,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { StyledTableRow, StyledTableCell } from '../../../table/MUITable';
 import MUIModal from '../../../modal/MUIModal';
-import UserManagementForm from '../userManagement/UserManagementForm';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ViewRolePermissionList from './ViewRolePermissionList';
 import RoleAndPermissionForm from './RoleAndPermissionForm';
@@ -26,7 +25,8 @@ const RolePermissionData = () => {
     const [showModal, setShowModal] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
-    const [updatedData, setUpdatedData] = useState(null);
+    const [btnSpinner, setBtnSpinner] = useState(false)
+
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -34,18 +34,14 @@ const RolePermissionData = () => {
     const [totalPages, setTotalPages] = useState(0);
 
     const handleCloseModal = useCallback(() => {
-        setShowModal(false);
         setIsUpdate(false);
         setIsDelete(false);
+        setShowModal(false);
     }, []);
 
-    const handleEditUser = useCallback((user) => {
-        setIsUpdate(true);
-        setUpdatedData(user);
-        setShowModal(true);
-    }, []);
 
-    const handleAddUser = useCallback(async() => {
+    const handleAddRolePermission = useCallback(async() => {
+        setBtnSpinner(prev=>!prev)
         try {
             const res=await getData(`${API_URLS.allPermissionList}`,setLoading);
             const data=res.data;
@@ -53,19 +49,19 @@ const RolePermissionData = () => {
         } catch (error) {
             console.error('Failed to fetch permissions:', error);
         }
-        setSelectedPermissions([])
         setIsUpdate(false);
         setShowModal(true);    
         setIsDelete(false);
         setRolePermissions(false)
         setIsRolePermissionList(false)
-
+        setBtnSpinner(prev=>!prev)
     }, []);
 
     const handleDelete = useCallback((role) => {
         setShowModal(true);
         setIsDelete(true);
         setCurrentRole(role)
+        setIsRolePermissionList(false)
     }, []);
 
     const handlePageChange = useCallback((event, value) => {
@@ -112,6 +108,7 @@ const RolePermissionData = () => {
 
     //role permission list
     const handlePermissionListView = async (roleId) => {
+        setBtnSpinner(prev=>!prev)
         try {
             const res = await getData(`${API_URLS.getRolePermission}/${roleId}`, setLoading);
             const data = res.data;
@@ -120,28 +117,20 @@ const RolePermissionData = () => {
         } catch (error) {
             console.error('Failed to fetch permissions:', error);
         }
+        setBtnSpinner(prev=>!prev)
     };
 
     //edit role 
     const [allPermission,setAllPermission]=useState([]);
-    const [selectedPermissions, setSelectedPermissions] = useState([]);
+    const [userOwnPermission, setUserOwnPermission] = useState([]);
     const [currentRole, setCurrentRole] = useState(null);
-    const handleCheckboxChange = (event, permissionId) => {
-        const { checked } = event.target;
-    
-        if (checked) {
-            setSelectedPermissions(prevState => [...prevState, permissionId]);
-        } else {
-            setSelectedPermissions(prevState => prevState.filter(id => id!== permissionId));
-        }
-        
-    };
     const editRolePermission= async (role)=>{
+        setBtnSpinner(prev=>!prev)
         try {
             const res=await getData(`${API_URLS.getPermissionList}/${role.id}`,setLoading);
             const data=res.data;
             setAllPermission(data.modules)
-            setSelectedPermissions(data.permissionIds);
+            setUserOwnPermission(data.permissionIds);
             setIsUpdate(true);
             setShowModal(true);
             setCurrentRole(role)
@@ -149,6 +138,7 @@ const RolePermissionData = () => {
         } catch (error) {
             console.error('Failed to fetch permissions:', error);
         }
+        setBtnSpinner(prev=>!prev)
     }
     return (
         <div className="container-fluid">
@@ -156,8 +146,8 @@ const RolePermissionData = () => {
                 <>
                     <div className="row">
                         <div className="col-md-12 d-flex justify-content-end">
-                            <Button onClick={handleAddUser} sx={{ marginBottom: '3px ' }} variant="outlined" color="primary" startIcon={<AddIcon />}>
-                                Add
+                            <Button onClick={handleAddRolePermission} sx={{ marginBottom: '3px ' }} variant="outlined" color="primary" startIcon={<AddIcon />}>
+                            {btnSpinner?'Adding...':"Add"}
                             </Button>
                         </div>
                     </div>
@@ -178,12 +168,13 @@ const RolePermissionData = () => {
                                         <StyledTableCell align="right">{role.name}</StyledTableCell>
                                         <StyledTableCell align="right">
                                             <Button onClick={() => handlePermissionListView(role.id)} sx={{ marginBottom: '3px ' }} variant="outlined" color="primary" startIcon={<VisibilityIcon />}>
-                                                View
+                                                {btnSpinner?'Viewing...':"View"}
                                             </Button>
                                         </StyledTableCell>
                                         <StyledTableCell align="right">
                                             <Button onClick={() => editRolePermission(role)} sx={{ marginRight: "2px" }} variant="outlined" startIcon={<EditIcon />}>
-                                                Edit
+                                            {btnSpinner?'Editing...':"Edit"}
+
                                             </Button>
                                             <Button variant="outlined" onClick={() => handleDelete(role)} color="error" startIcon={<DeleteIcon />}>
                                                 Delete
@@ -206,13 +197,10 @@ const RolePermissionData = () => {
                             isUpdate={isUpdate}
                             allPermission={allPermission}
                             handleCloseModal={handleCloseModal}
-                            setLoading={setLoading}
-                            loading={loading}
                             getRolePermissionList={getRolePermissionList}
                             currentPage={currentPage}
                             paginatedValue={paginatedValue}
-                            selectedPermissions={selectedPermissions}
-                            setSelectedPermissions={setSelectedPermissions}
+                            userOwnPermission={userOwnPermission}
                             currentRole={currentRole}
                         />}
                         loading={loading}

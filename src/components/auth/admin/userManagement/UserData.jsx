@@ -33,8 +33,8 @@ const UserData = () => {
     const [totalPages, setTotalPages] = useState(0);
 
     const handleCloseModal = useCallback(() => {
-        setShowModal(false);
         setIsUpdate(false);
+        setShowModal(false);
         setIsDelete(false);
     }, []);
 
@@ -130,6 +130,7 @@ const UserData = () => {
                     </TableContainer>
                     <MUIModal
                         showModal={showModal}
+                        isDelete={isDelete}
                         header={isDelete ? 'Delete User' : (isUpdate ? 'Edit User' : 'Add User')}
                         handleCloseModal={handleCloseModal}
                         modalBody={<UserManagementForm
@@ -137,8 +138,6 @@ const UserData = () => {
                             isUpdate={isUpdate}
                             updatedData={updatedData}
                             handleCloseModal={handleCloseModal}
-                            setLoading={setLoading}
-                            loading={loading}
                             getUserManagementList={getUserManagementList}
                             currentPage={currentPage}
                             paginatedValue={paginatedValue}

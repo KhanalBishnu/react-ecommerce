@@ -26,7 +26,7 @@ const Header = styled('div')({
   justifyContent: 'space-between',
   alignItems: 'center',
   padding: '10px 18px',
-  backgroundColor: '#4287cbba',
+  backgroundColor: '#1488bfba',
   color: '#fff',
 });
 
@@ -43,35 +43,37 @@ const Footer = styled('div')({
 });
 
 const CustomBackdrop = styled(Backdrop)({
-    backgroundColor: '#8b9ab9cc', // Darker background color when modal is open
-  });
+  backgroundColor: '#8b9ab9cc', // Darker background color when modal is open
+});
 
-export default function MUIModal({showModal,handleCloseModal,modalBody,loading, header,isDelete=false}) {
+export default function MUIModal({ showModal, handleCloseModal, modalBody, header, isDelete = false }) {
   return (
     <div>
-      
+
       <Modal
-         aria-labelledby="transition-modal-title"
-         aria-describedby="transition-modal-description"
-         open={showModal}
-         onClose={handleCloseModal}
-         closeAfterTransition
-         BackdropComponent={CustomBackdrop}
-         BackdropProps={{
-           timeout: 500,
-         }}
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={showModal}
+        onClose={handleCloseModal}
+        closeAfterTransition
+        BackdropComponent={CustomBackdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
       >
         <Fade in={showModal}>
-          <Box sx={{  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: isDelete?'45%':"70%",
-  bgcolor: 'background.paper',
-  border: 'none',
-  boxShadow: 24,
-  borderRadius: '8px',
-  overflow: 'hidden'}}>
+          <Box sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: isDelete ? '45%' : "70%",
+            bgcolor: 'background.paper',
+            border: 'none',
+            boxShadow: 24,
+            borderRadius: '8px',
+            overflow: 'hidden'
+          }}>
             <Header>
               <Typography id="transition-modal-title" variant="h6" component="h5">
                 {header}
@@ -81,16 +83,8 @@ export default function MUIModal({showModal,handleCloseModal,modalBody,loading, 
               </IconButton>
             </Header>
             <Body>
-            {modalBody}
+              {modalBody}
             </Body>
-            {/* <Footer>
-              <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ mr: 1 }}>
-                Submit
-              </Button>
-              <Button variant="outlined" onClick={handleClose}>
-                Close
-              </Button>
-            </Footer> */}
           </Box>
         </Fade>
       </Modal>

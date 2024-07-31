@@ -15,25 +15,25 @@ function RoleAndPermissionForm({ isDelete,
   getRolePermissionList,
   currentPage,
   paginatedValue,
-  selectedPermissions, setSelectedPermissions, currentRole }) {
+  currentRole,
+  userOwnPermission }) {
 
   const [btnSpinner, setBtnSpinner] = useState(false)
   const [newRole, setNewRole] = useState(isUpdate ? currentRole?.name : '')
+  const [selectedPermissions, setSelectedPermissions] = useState(isUpdate?userOwnPermission:[]);
 
   const handleCheckboxChange = (event, permissionId) => {
     const { checked } = event.target;
-
     if (checked) {
       setSelectedPermissions(prevState => [...prevState, permissionId]);
     } else {
       setSelectedPermissions(prevState => prevState.filter(id => id !== permissionId));
     }
-
   };
   const handleDelete = async (userId) => {
-    debugger
     try {
-      const response = await getData(`${API_URLS.rolePermissionDelete}/${userId}`, setLoading);
+      setBtnSpinner(true);
+      const response = await getData(`${API_URLS.rolePermissionDelete}/${userId}`, setBtnSpinner);
       debugger
       if (response.response) {
         toast.success(response.message)
@@ -45,13 +45,13 @@ function RoleAndPermissionForm({ isDelete,
     } catch (error) {
       SwalMessage('Error', error.message, 'error');
     }finally{
-      setLoading(false);
+      setBtnSpinner(false);
     }
   }
 
   const handleSubmit = async () => {
     if (!newRole) {
-      toast.error('Role name must be required!')
+      toast.error('Role name is required!')
       return;
     }
     let newFormData = { name: newRole, permissionIds: selectedPermissions };
@@ -117,7 +117,7 @@ function RoleAndPermissionForm({ isDelete,
         <Button onClick={handleCloseModal} variant="outlined">
           Cancel
         </Button>
-        <Button variant="contained" color={isDelete ? 'error' : 'primary'} onClick={isDelete ? () => handleDelete(currentRole.id) : handleSubmit} sx={{ mr: 1 }}>
+        <Button disabled={btnSpinner} variant="contained" color={isDelete ? 'error' : 'primary'} onClick={isDelete ? () => handleDelete(currentRole.id) : handleSubmit} sx={{ mr: 1 }}>
           {isDelete ? (btnSpinner ? 'Confirming...' : 'Confirm') : (btnSpinner ? 'Submitting...' : 'Submit')}
         </Button>
       </div>
