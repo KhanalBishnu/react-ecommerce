@@ -16,6 +16,7 @@ import UserData from './components/auth/admin/userManagement/UserData'
 import RolePermissionData from './components/auth/admin/roleAndPermission/RolePermissionData'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import CategoryProduct from './components/auth/admin/categoryProduct/CategoryProduct'
 
 function App() {
   // after refresh get all auth user permission 
@@ -66,6 +67,8 @@ function App() {
         <Route path='role-permission' element={<ProtectedPermissionRoute permission='View|Role And Permission' Component={RolePermissionData} />}>
         </Route>
         <Route path='user-management' element={<ProtectedPermissionRoute permission='View|User Management' Component={UserData} />}>
+        </Route>
+        <Route path='category-product' element={<ProtectedPermissionRoute permission='View|Category Product' Component={CategoryProduct} />}>
         </Route>
       </Route>
     </Routes>

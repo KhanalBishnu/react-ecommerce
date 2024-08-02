@@ -21,6 +21,13 @@ const API_URLS = {
   allPermissionList:`${BASE_URL}/dashboard/role-and-permission/allPermissionList`,
   storeRoleAndPermission:`${BASE_URL}/dashboard/role-and-permission/store`,
   updateRoleAndPermission:`${BASE_URL}/dashboard/role-and-permission/update`,
+
+
+  //category product 
+  getCategoryProduct:`${BASE_URL}/dashboard/category-product/getList`,
+  storeCategoryProduct:`${BASE_URL}/dashboard/category-product`,
+  storeCategoryProduct:`${BASE_URL}/dashboard/category-product`,
+  updateCategoryProduct:`${BASE_URL}/dashboard/category-product/update`,
 };
 
 export default API_URLS;

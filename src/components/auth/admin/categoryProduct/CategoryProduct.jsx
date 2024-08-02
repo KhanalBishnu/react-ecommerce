@@ -3,6 +3,8 @@ import { getData, postData } from '../../../../constant/axios';
 import API_URLS from '../../../../constant/Constant';
 import { SwalMessage } from '../../../swal/SwalMessage';
 import Spinner from '../../../spinner/Spinner';
+import ModalComponent from '../../../modal/ModalComponent';
+import UserManagementForm from './CategoryProductForm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button, FormControl, InputLabel, MenuItem, Pagination, Select, Stack } from '@mui/material';
@@ -15,18 +17,16 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { StyledTableRow, StyledTableCell } from '../../../table/MUITable';
 import MUIModal from '../../../modal/MUIModal';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import ViewRolePermissionList from './ViewRolePermissionList';
-import RoleAndPermissionForm from './RoleAndPermissionForm';
+import CustomPagination from '../../../pagination/CustomPagination';
+import CategoryProductForm from './CategoryProductForm';
 
-const RolePermissionData = () => {
+const CategoryProduct = () => {
     const [loading, setLoading] = useState(false);
-    const [roles, setRoles] = useState([]);
+    const [categoryProduct, setCategoryProduct] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
-    const [btnSpinner, setBtnSpinner] = useState(false)
-
+    const [updatedData, setUpdatedData] = useState(null);
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -39,58 +39,41 @@ const RolePermissionData = () => {
         setIsDelete(false);
     }, []);
 
-
-    const handleAddRolePermission = useCallback(async() => {
-        setBtnSpinner(prev=>!prev)
-        try {
-            const res=await getData(`${API_URLS.allPermissionList}`,setLoading);
-            const data=res.data;
-            setAllPermission(data)
-        } catch (error) {
-            console.error('Failed to fetch permissions:', error);
-        }
-        setIsUpdate(false);
-        setShowModal(true);    
-        setIsDelete(false);
-        setRolePermissions(false)
-        setIsRolePermissionList(false)
-        setBtnSpinner(prev=>!prev)
+    const handleEditUser = useCallback((user) => {
+        setIsUpdate(true);
+        setUpdatedData(user);
+        setShowModal(true);
     }, []);
 
-    const handleDelete = useCallback((role) => {
+    const handleAddUser = useCallback(() => {
+        setIsUpdate(false);
+        setShowModal(true);
+    }, []);
+
+    const handleDelete = useCallback((userId) => {
         setShowModal(true);
         setIsDelete(true);
-        setCurrentRole(role)
-        setIsRolePermissionList(false)
+        setUpdatedData(userId);
     }, []);
 
     const handlePageChange = useCallback((event, value) => {
         setCurrentPage(value);
-        getRolePermissionList(value, paginatedValue);
+        getCategoryProductData(value, paginatedValue);
     }, [paginatedValue]);
 
     const handleItemsPerPageChange = useCallback((event) => {
         const value = event.target.value;
         setPaginatedValue(value);
         setCurrentPage(1);
-        getRolePermissionList(1, value);
+        getCategoryProductData(1, value);
     }, []);
 
-    //permission 
-    const [rolePermissions, setRolePermissions] = useState([]);
-    const [isRolePermissionList, setIsRolePermissionList] = useState(false);
-    const handleViewRolePermission = () => {
-        setIsUpdate(false);
-        setShowModal(true);
-        setIsRolePermissionList(true);
-    }
-
-    const getRolePermissionList = useCallback(async (page = 1, paginatedValue = 10) => {
+    const getCategoryProductData = useCallback(async (page = 1, paginatedValue = 10) => {
         try {
             setLoading(true);
-            const response = await postData(API_URLS.getRoleAndPermissionData, { page, paginatedValue });
+            const response = await postData(API_URLS.getCategoryProduct, { page, paginatedValue });
             if (response.response) {
-                setRoles(response.data.items);
+                setCategoryProduct(response.data.items);
                 setTotalPages(Math.ceil(response.data.total / paginatedValue));
             } else {
                 SwalMessage('Error', response.message || 'Something went Wrong!', 'error');
@@ -103,51 +86,17 @@ const RolePermissionData = () => {
     }, []);
 
     useEffect(() => {
-        getRolePermissionList(currentPage, paginatedValue);
-    }, [currentPage, paginatedValue, getRolePermissionList]);
+        getCategoryProductData(currentPage, paginatedValue);
+    }, [currentPage, paginatedValue, getCategoryProductData]);
 
-    //role permission list
-    const handlePermissionListView = async (roleId) => {
-        setBtnSpinner(prev=>!prev)
-        try {
-            const res = await getData(`${API_URLS.getRolePermission}/${roleId}`, setLoading);
-            const data = res.data;
-            setRolePermissions(data);
-            handleViewRolePermission();
-        } catch (error) {
-            console.error('Failed to fetch permissions:', error);
-        }
-        setBtnSpinner(prev=>!prev)
-    };
-
-    //edit role 
-    const [allPermission,setAllPermission]=useState([]);
-    const [userOwnPermission, setUserOwnPermission] = useState([]);
-    const [currentRole, setCurrentRole] = useState(null);
-    const editRolePermission= async (role)=>{
-        setBtnSpinner(prev=>!prev)
-        try {
-            const res=await getData(`${API_URLS.getPermissionList}/${role.id}`,setLoading);
-            const data=res.data;
-            setAllPermission(data.modules)
-            setUserOwnPermission(data.permissionIds);
-            setIsUpdate(true);
-            setShowModal(true);
-            setCurrentRole(role)
-            setIsRolePermissionList(false)
-        } catch (error) {
-            console.error('Failed to fetch permissions:', error);
-        }
-        setBtnSpinner(prev=>!prev)
-    }
     return (
         <div className="container-fluid">
             {loading ? <Spinner content="Loading..." /> : (
                 <>
                     <div className="row">
                         <div className="col-md-12 d-flex justify-content-end">
-                            <Button onClick={handleAddRolePermission} sx={{ marginBottom: '3px ' }} variant="outlined" color="primary" startIcon={<AddIcon />}>
-                            {btnSpinner?'Adding...':"Add"}
+                            <Button onClick={handleAddUser} sx={{ marginBottom: '3px ' }} variant="outlined" color="primary" startIcon={<AddIcon />}>
+                                Add
                             </Button>
                         </div>
                     </div>
@@ -157,26 +106,27 @@ const RolePermissionData = () => {
                                 <TableRow>
                                     <StyledTableCell>SN</StyledTableCell>
                                     <StyledTableCell align="right">Name</StyledTableCell>
-                                    <StyledTableCell align="right">Permissions</StyledTableCell>
+                                    <StyledTableCell align="right">Image</StyledTableCell>
+                                    <StyledTableCell align="center">Status</StyledTableCell>
                                     <StyledTableCell align="center">Action</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {roles.map((role, i) => (
-                                    <StyledTableRow key={role.id}>
+                                {categoryProduct.map((category, i) => (
+                                    <StyledTableRow key={category.id}>
                                         <StyledTableCell component="th" scope="row">{i + 1}</StyledTableCell>
-                                        <StyledTableCell align="right">{role.name}</StyledTableCell>
-                                        <StyledTableCell align="right">
-                                            <Button onClick={() => handlePermissionListView(role.id)} sx={{ marginBottom: '3px ' }} variant="outlined" color="primary" startIcon={<VisibilityIcon />}>
-                                                {btnSpinner?'Viewing...':"View"}
-                                            </Button>
+                                        <StyledTableCell align="right">{category.name}</StyledTableCell>
+                                        <StyledTableCell align="right">{
+                                            category.media && category.media.length>0 ?
+                                            <img height="100" width="100" src={category.media[0].original_url} alt="" />:"-"
+                                        }
                                         </StyledTableCell>
+                                        <StyledTableCell align="right">{category.status}</StyledTableCell>
                                         <StyledTableCell align="right">
-                                            <Button onClick={() => editRolePermission(role)} sx={{ marginRight: "2px" }} variant="outlined" startIcon={<EditIcon />}>
-                                            {btnSpinner?'Editing...':"Edit"}
-
+                                            <Button onClick={() => handleEditUser(category)} sx={{ marginRight: "2px" }} variant="outlined" startIcon={<EditIcon />}>
+                                                Edit
                                             </Button>
-                                            <Button variant="outlined" onClick={() => handleDelete(role)} color="error" startIcon={<DeleteIcon />}>
+                                            <Button variant="outlined" onClick={() => handleDelete(category.id)} color="error" startIcon={<DeleteIcon />}>
                                                 Delete
                                             </Button>
                                         </StyledTableCell>
@@ -186,22 +136,18 @@ const RolePermissionData = () => {
                         </Table>
                     </TableContainer>
                     <MUIModal
-                        isDelete={isDelete}
                         showModal={showModal}
-                        header={isRolePermissionList ? 'Permission List' : (isDelete ? 'Delete Role' : (isUpdate ? 'Edit Role' : 'Add Role'))}
+                        isDelete={isDelete}
+                        header={isDelete ? 'Delete Category Product' : (isUpdate ? 'Edit Category Product' : 'Add Category Product')}
                         handleCloseModal={handleCloseModal}
-                        modalBody={isRolePermissionList ? <ViewRolePermissionList
-                            rolePermissions={rolePermissions}
-                        /> : <RoleAndPermissionForm
+                        modalBody={<CategoryProductForm
                             isDelete={isDelete}
                             isUpdate={isUpdate}
-                            allPermission={allPermission}
+                            updatedData={updatedData}
                             handleCloseModal={handleCloseModal}
-                            getRolePermissionList={getRolePermissionList}
+                            getCategoryProductData={getCategoryProductData}
                             currentPage={currentPage}
                             paginatedValue={paginatedValue}
-                            userOwnPermission={userOwnPermission}
-                            currentRole={currentRole}
                         />}
                         loading={loading}
                     />
@@ -235,4 +181,4 @@ const RolePermissionData = () => {
     );
 };
 
-export default RolePermissionData;
+export default React.memo(CategoryProduct);

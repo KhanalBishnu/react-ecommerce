@@ -24,6 +24,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import { Link } from 'react-router-dom';
 import usePermissionCheck from '../../../../hook/usePermissionCheck';
+import CategoryIcon from '@mui/icons-material/Category';
 
 const drawerWidth = 240;
 
@@ -123,11 +124,13 @@ export default function Sidebar() {
   const {checkPermission}=usePermissionCheck();
   const hasPermissionUserManagement=checkPermission('View|User Management')
   const hasPermissionRolePermission=checkPermission('View|Role And Permission')
+  const hasPermissionCategoryProduct=checkPermission('View|Category Product')
 
   const navLinks=[
     {to:'/dashboard', label:'Home',icon:<HomeIcon/> ,name:'dashboard'},
     hasPermissionRolePermission &&{to:'/dashboard/role-permission', label:'Role and Permission',icon:<LockIcon/> ,name:'role-permission'},
     hasPermissionUserManagement && { to:'/dashboard/user-management', label:'User Management',icon:<PersonIcon/>, name:'user-management'},
+    hasPermissionCategoryProduct && { to:'/dashboard/category-product', label:'Category',icon:<CategoryIcon/>, name:'category-product'},
   ].filter(Boolean);
   return (
     <Box sx={{ display: 'flex' }}>
