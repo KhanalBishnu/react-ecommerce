@@ -148,6 +148,7 @@ const CategoryProduct = () => {
                             getCategoryProductData={getCategoryProductData}
                             currentPage={currentPage}
                             paginatedValue={paginatedValue}
+                            setLoading={setLoading}
                         />}
                         loading={loading}
                     />

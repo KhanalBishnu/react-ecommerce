@@ -13,7 +13,7 @@ function CategoryProductForm({ isUpdate, updatedData, handleCloseModal, isDelete
     // for image preview 
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(isUpdate&&updatedData.media&& updatedData.media.length>0 ?updatedData.media[0].original_url:null);
-    const [removedFiles,setRemovedFiles]=useState(isUpdate&&updatedData.media&& updatedData.media.length>0 ?updatedData.media[0].id:null)
+    const [removedFiles,setRemovedFiles]=useState(isUpdate&&updatedData.media&& updatedData.media.length>0  && file?updatedData.media[0].id:null)
 
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
@@ -32,6 +32,7 @@ function CategoryProductForm({ isUpdate, updatedData, handleCloseModal, isDelete
     const handleRemove = () => {
         setFile(null);
         setPreview(null);
+        setRemovedFiles(isUpdate&&updatedData.media&& updatedData.media.length>0 ?updatedData.media[0].id:null)
       };
     //end image preview
 
@@ -89,9 +90,9 @@ function CategoryProductForm({ isUpdate, updatedData, handleCloseModal, isDelete
         }
       };
       
-    const handleDelete = async (userId) => {
+    const handleDelete = async (CategoryProductId) => {
         try {
-            const response = await getData(`${API_URLS.getUserManagementDataDelete}/${userId}`, setLoading);
+            const response = await getData(`${API_URLS.deleteCategoryProduct}/${CategoryProductId}`, setLoading);
             if (response.response) {
                 toast.success(response.message)
                 getCategoryProductData(currentPage, paginatedValue)
@@ -140,7 +141,7 @@ function CategoryProductForm({ isUpdate, updatedData, handleCloseModal, isDelete
                                         onChange={handleChangeCheck}
                                         name="status"
                                         color="primary"
-                                        defaultChecked
+                                        // defaultChecked
                                     />
                                 }
                                 label="Enabled"

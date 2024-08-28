@@ -6,7 +6,6 @@ const ImagePreview = ({ file, preview, onRemove }) => {
     return (
         <Box className="border" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
              {preview &&    <div className='position-relative border'>
-                    
                         <Box
                             component="img"
                             src={preview}

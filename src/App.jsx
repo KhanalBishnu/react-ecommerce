@@ -17,6 +17,7 @@ import RolePermissionData from './components/auth/admin/roleAndPermission/RolePe
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import CategoryProduct from './components/auth/admin/categoryProduct/CategoryProduct'
+import Home from './components/frontend/Home'
 
 function App() {
   // after refresh get all auth user permission 
@@ -58,7 +59,7 @@ function App() {
 <>
 <ToastContainer/>
     <Routes>
-      <Route path='/' element={<Login />} />
+      <Route path='/' element={<Home />} />
       <Route path='/login' element={<Login />} />
       <Route path='/sign-up' element={<Signup />} />
       <Route path='/dashboard' element={<ProtectedRoute Component={Dashboard} />}>

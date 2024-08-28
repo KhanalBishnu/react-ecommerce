@@ -28,6 +28,7 @@ const API_URLS = {
   storeCategoryProduct:`${BASE_URL}/dashboard/category-product`,
   storeCategoryProduct:`${BASE_URL}/dashboard/category-product`,
   updateCategoryProduct:`${BASE_URL}/dashboard/category-product/update`,
+  deleteCategoryProduct:`${BASE_URL}/dashboard/category-product/delete`,
 };
 
 export default API_URLS;
