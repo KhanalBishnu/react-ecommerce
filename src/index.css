@@ -35,3 +35,28 @@ a{
 .swal2-center{
   z-index: 9999;
 }
+
+.custom-slider .slick-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-body {
+  height: 400px; /* Adjust as needed */
+  width: 100%; /* Full width */
+  overflow: hidden; /* Hide overflow */
+}
+
+.img-body img {
+  height: 100%;
+  width: 100vw;
+  object-fit: cover; /* Ensure the image covers the container */
+}
+
+.slide-text {
+  text-align: center;
+  margin-top: 20px;
+}
+
+

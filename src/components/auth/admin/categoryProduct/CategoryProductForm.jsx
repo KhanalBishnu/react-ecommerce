@@ -10,8 +10,15 @@ import ImagePreview from '../../../Image/ImagePreview'
 // import MUIAlert, { alertMUI } from '../../../swal/MUIAlert'
 
 function CategoryProductForm({ isUpdate, updatedData, handleCloseModal, isDelete, setLoading, getCategoryProductData, currentPage, paginatedValue }) {
-    // for image preview 
+    const [btnSpinner, setBtnSpinner] = useState(false)
     const [file, setFile] = useState(null);
+    const [formData, setFormData] = useState({
+        name: isUpdate ? updatedData.name : '',
+        description: isUpdate ? updatedData.description: '',
+        status: isUpdate && updatedData.status=="Disabled"?false : true,
+        file:file,
+    })
+    // for image preview 
     const [preview, setPreview] = useState(isUpdate&&updatedData.media&& updatedData.media.length>0 ?updatedData.media[0].original_url:null);
     const [removedFiles,setRemovedFiles]=useState(isUpdate&&updatedData.media&& updatedData.media.length>0  && file?updatedData.media[0].id:null)
 
@@ -36,13 +43,7 @@ function CategoryProductForm({ isUpdate, updatedData, handleCloseModal, isDelete
       };
     //end image preview
 
-    const [btnSpinner, setBtnSpinner] = useState(false)
-    const [formData, setFormData] = useState({
-        name: isUpdate ? updatedData.name : '',
-        description: isUpdate ? updatedData.description: '',
-        status: isUpdate && updatedData.status=="Disabled"?false : true,
-        file:file,
-    })
+    
     const [errors, setErrors] = useState({})
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -72,7 +73,6 @@ function CategoryProductForm({ isUpdate, updatedData, handleCloseModal, isDelete
             setBtnSpinner(true);
             const apiUrl = isUpdate ? API_URLS.updateCategoryProduct : API_URLS.storeCategoryProduct;
             const response = await postData(apiUrl, newFormData, setLoading);
-      
             if (response.response) {
               // On success
               getCategoryProductData(currentPage, paginatedValue);
