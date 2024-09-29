@@ -20,155 +20,231 @@ import CloseIcon from '@mui/icons-material/Close';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import { CardActions, Badge, Box, Link } from '@mui/material';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import MenuIcon from '@mui/icons-material/Menu';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
-const categories = [
-  {
-    id: 1,
-    name: 'Electronics',
-    products: [
-      { id: 1, name: 'Laptop', image: 'laptop.jpg', price: '$999' },
-      { id: 2, name: 'Smartphone', image: 'smartphone.jpg', price: '$599' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Clothing',
-    products: [
-      { id: 3, name: 'T-Shirt', image: 'tshirt.jpg', price: '$29' },
-      { id: 4, name: 'Jeans', image: 'jeans.jpg', price: '$49' },
-    ],
-  },
-  // Add more categories as needed
+const products = [
+  { id: 1, name: "Wireless Earbuds", price: 99.99, image: "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg" },
+  { id: 2, name: "Smart Watch", price: 199.99, image: "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg" },
+  { id: 3, name: "Bluetooth Speaker", price: 79.99, image: "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg" },
+  { id: 4, name: "Laptop", price: 999.99, image: "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg" },
 ];
 
-const heroImages = [
-  {
-    src: 'https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg',
-    name: 'test 1',
-    description: 'testing new things'
-  },
-  {
-    src: 'https://via.placeholder.com/1200x400?text=Image+2',
-    name: 'test 2',
-    description: 'testing new things'
-  },
-  {
-    src: 'https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg',
-    name: 'test 3',
-    description: 'testing new things'
-  },
-
+const heroSlides = [
+  { id: 1, image: "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg", title: "Welcome to E-Shop", subtitle: "Discover amazing products at unbeatable prices!" },
+  { id: 2, image: "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg", title: "New Arrivals", subtitle: "Check out our latest collection" },
+  { id: 3, image: "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg", title: "Special Offers", subtitle: "Limited time deals on select items" },
 ];
 
 const Home = () => {
-  var settings = {
+  const [cartOpen, setCartOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const sliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 5000,
     fade: true,
   };
-  const [cartOpen, setCartOpen] = useState(false);
 
   const toggleCartDrawer = (open) => () => {
     setCartOpen(open);
   };
 
+  const toggleMenuDrawer = (open) => () => {
+    setMenuOpen(open);
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
-    // Implement search functionality here
     alert('Search functionality to be implemented!');
+  };
+
+  const addToCart = (product) => {
+    setCartItems(prevItems => {
+      const existingItem = prevItems.find(item => item.id === product.id);
+      if (existingItem) {
+        return prevItems.map(item =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prevItems, { ...product, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (productId) => {
+    setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
+  };
+
+  const getTotalItems = () => {
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const getTotalPrice = () => {
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
   };
 
   return (
     <div>
-      {/* Navbar */}
       <AppBar position="static" color="primary">
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            My E-Commerce Store
+          {isMobile && (
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              onClick={toggleMenuDrawer(true)}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            E-Shop
           </Typography>
-          <form className="d-flex" onSubmit={handleSearch}>
+          {!isMobile && (
+            <div>
+              <Button color="inherit">Home</Button>
+              <Button color="inherit">Products</Button>
+              <Button color="inherit">About</Button>
+              <Button color="inherit">Contact</Button>
+            </div>
+          )}
+          <form onSubmit={handleSearch} style={{ display: 'flex', marginLeft: '1rem' }}>
             <TextField
               variant="outlined"
               placeholder="Search products..."
               size="small"
-              sx={{ backgroundColor: 'white', borderRadius: 1, mr: 2 }}
+              sx={{ backgroundColor: 'white', borderRadius: 1, mr: 1 }}
             />
             <Button variant="contained" color="secondary" type="submit">
               Search
             </Button>
           </form>
           <IconButton color="inherit" onClick={toggleCartDrawer(true)}>
-            <ShoppingCartIcon />
+            <Badge badgeContent={getTotalItems()} color="secondary">
+              <ShoppingCartIcon />
+            </Badge>
           </IconButton>
         </Toolbar>
       </AppBar>
 
+      {/* Menu Drawer (only for mobile) */}
+      <Drawer anchor="left" open={menuOpen} onClose={toggleMenuDrawer(false)}>
+        <Box
+          sx={{ width: 250 }}
+          role="presentation"
+          onClick={toggleMenuDrawer(false)}
+          onKeyDown={toggleMenuDrawer(false)}
+        >
+          <List>
+            <ListItem button key="home">
+              <ListItemText primary="Home" />
+            </ListItem>
+            <ListItem button key="products">
+              <ListItemText primary="Products" />
+            </ListItem>
+            <ListItem button key="about">
+              <ListItemText primary="About" />
+            </ListItem>
+            <ListItem button key="contact">
+              <ListItemText primary="Contact" />
+            </ListItem>
+          </List>
+        </Box>
+      </Drawer>
+
       {/* Hero Section with Background Slider */}
-      <div>
-        <Slider className="custom-slider" {...settings}>
-          {heroImages.map((image) => (
-            <div key={image.id} className="slide-item">
-              <div className="img-body">
-                <img src={image.src} alt={image.name} />
-              </div>
-              <div className="slide-text">
-                <h2>{image.name}</h2>
-                <p>{image.description}</p>
+      <div style={{ position: 'relative', height: '500px', overflow: 'hidden' }}>
+        <Slider {...sliderSettings}>
+          {heroSlides.map((slide) => (
+            <div key={slide.id}>
+              <div style={{
+                backgroundImage: `url(${slide.image})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                height: '500px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <div style={{
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  padding: '2rem',
+                  borderRadius: '8px',
+                  textAlign: 'center',
+                  color: 'white',
+                }}>
+                  <Typography variant="h2" component="h1" gutterBottom>
+                    {slide.title}
+                  </Typography>
+                  <Typography variant="h5" component="p" gutterBottom>
+                    {slide.subtitle}
+                  </Typography>
+                  <Button variant="contained" color="primary" size="large">
+                    Shop Now
+                  </Button>
+                </div>
               </div>
             </div>
           ))}
         </Slider>
       </div>
 
-      {/* Category Showcase */}
       <Container className="my-5">
         <Typography variant="h4" gutterBottom>
           Shop by Category
         </Typography>
-        <Grid container spacing={4}>
-          {categories.map((category) => (
-            <Grid item xs={12} md={6} key={category.id}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5" component="div">
-                    {category.name}
-                  </Typography>
-                  <Grid container spacing={2}>
-                    {category.products.map((product) => (
-                      <Grid item xs={12} sm={6} key={product.id}>
-                        <Card className="mt-2">
-                          <CardMedia
-                            component="img"
-                            height="140"
-                            image={product.image}
-                            alt={product.name}
-                          />
-                          <CardContent>
-                            <Typography variant="h6">
-                              {product.name}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              {product.price}
-                            </Typography>
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </CardContent>
-              </Card>
+        <section className="py-5">
+          <Container>
+            <Typography variant="h3" component="h2" gutterBottom className="text-center mb-4">
+              Featured Products
+            </Typography>
+            <Grid container spacing={4}>
+              {products.map((product) => (
+                <Grid item key={product.id} xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={product.image}
+                      alt={product.name}
+                    />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {product.name}
+                      </Typography>
+                      <Typography variant="body1" color="text.secondary">
+                        ${product.price.toFixed(2)}
+                      </Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button size="small" color="primary" onClick={() => addToCart(product)}>
+                        Add to Cart
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
+          </Container>
+        </section>
       </Container>
 
-      {/* Shopping Cart Drawer */}
+      {/* Cart Drawer */}
       <Drawer anchor="right" open={cartOpen} onClose={toggleCartDrawer(false)}>
         <Container sx={{ width: 350, padding: 2, position: 'relative' }}>
           <IconButton
@@ -183,25 +259,80 @@ const Home = () => {
           </Typography>
           <Divider />
           <List>
-            {/* Example Cart Items */}
-            <ListItem>
-              <ListItemText primary="Laptop" secondary="$999" />
-            </ListItem>
-            <ListItem>
-              <ListItemText primary="Smartphone" secondary="$599" />
-            </ListItem>
-            {/* Add more items as needed */}
+            {cartItems.map((item) => (
+              <ListItem key={item.id}>
+                <ListItemText 
+                  primary={item.name} 
+                  secondary={`$${item.price.toFixed(2)} x ${item.quantity}`} 
+                />
+                <Button onClick={() => removeFromCart(item.id)} color="secondary">
+                  Remove
+                </Button>
+              </ListItem>
+            ))}
           </List>
           <Divider />
+          <Typography variant="h6" align="right" sx={{ mt: 2 }}>
+            Total: ${getTotalPrice()}
+          </Typography>
           <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
             Checkout
           </Button>
         </Container>
       </Drawer>
+
+      <Box component="footer" sx={{ bgcolor: 'background.paper', py: 6, mt: 'auto' }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={4} justifyContent="space-evenly">
+            <Grid item xs={12} sm={6} md={3}>
+              <Typography variant="h6" color="text.primary" gutterBottom>
+                About Us
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Best Product
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Typography variant="h6" color="text.primary" gutterBottom>
+                Contact Us
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                123 E-Shop 
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Typography variant="h6" color="text.primary" gutterBottom>
+                Follow Us
+              </Typography>
+              <Link href="https://www.facebook.com/" color="inherit">
+                <FacebookIcon />
+              </Link>
+              <Link
+                href="https://www.instagram.com/"
+                color="inherit"
+                sx={{ pl: 1, pr: 1 }}
+              >
+                <InstagramIcon />
+              </Link>
+              <Link href="https://www.twitter.com/" color="inherit">
+                <TwitterIcon />
+              </Link>
+            </Grid>
+          </Grid>
+          <Box mt={5}>
+            <Typography variant="body2" color="text.secondary" align="center">
+              {'Copyright © '}
+              <Link color="inherit" href="https://your-website.com/">
+                E-Shop
+              </Link>{' '}
+              {new Date().getFullYear()}
+              {'.'}
+            </Typography>
+          </Box>
+        </Container>
+      </Box>
     </div>
   );
 };
 
 export default Home;
-
-

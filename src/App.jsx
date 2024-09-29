@@ -18,8 +18,36 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import CategoryProduct from './components/auth/admin/categoryProduct/CategoryProduct'
 import Home from './components/frontend/Home'
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
 
+
+window.Pusher = Pusher;
 function App() {
+  const [eventData, setEventData] = useState(null);
+ 
+  // useEffect(() => {
+  //   window.Echo = new Echo({
+  //     broadcaster: 'pusher',
+  //     key: 'local', // Use your Pusher key from the .env
+  //     cluster: 'mt1', // Add the Pusher cluster (e.g., 'mt1', replace with your actual cluster)
+  //     wsHost: window.location.hostname,
+  //     wsPort: 6001, // WebSocket port (matches the .env configuration)
+  //     forceTLS: false, // Disable TLS for local development
+  //     disableStats: true, // Disable Pusher stats collection
+  //     enabledTransports: ['ws', 'wss'] // Only use WebSocket transports
+  //   });
+
+  //   window.Echo.channel('chat-data') // Replace with your channel name
+  //     .listen('NotificationTest', (e) => {
+  //       console.log('WebSocket event data:', e);
+  //     });
+
+  //   // Cleanup WebSocket connection on component unmount
+  //   return () => {
+  //     window.Echo.leave('chat-data');
+  //   };
+  // }, []);
   // after refresh get all auth user permission 
   const token = useSelector((state) => state.auth.token)
   const [loading, setLoading] = useState(!!token);
@@ -72,6 +100,7 @@ function App() {
         <Route path='category-product' element={<ProtectedPermissionRoute permission='View|Category Product' Component={CategoryProduct} />}>
         </Route>
       </Route>
+\
     </Routes>
     </>
   )

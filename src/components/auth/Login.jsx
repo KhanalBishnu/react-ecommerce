@@ -48,6 +48,7 @@ export default function Login() {
       if(response.response){
         debugger
         localStorage.setItem('token',JSON.stringify(response.token));
+        localStorage.setItem('userId',JSON.stringify(response.user.id));
         dispatch(setToken(response.token));
         dispatch(setPermission(response.userPermission))
         navigate('/dashboard/home')
