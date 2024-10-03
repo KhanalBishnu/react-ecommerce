@@ -1,54 +1,62 @@
-import React, { useEffect } from 'react'
-import Sidebar from './layout/Sidebar'
-import Navbar from './layout/Navbar'
+import React, { useEffect } from 'react';
+import Sidebar from './layout/Sidebar';
+import Navbar from './layout/Navbar';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
-
 window.Pusher = Pusher;
+
 function Dashboard() {
-  const REACT_APP_API_URL='http://127.0.0.1:8000/api'
-  debugger
-
-  const userId=JSON.parse(localStorage.getItem('userId'));
-
+  const token = JSON.parse(localStorage.getItem('token'));
   useEffect(() => {
+    const userId = JSON.parse(localStorage.getItem('userId'));
+    const token = JSON.parse(localStorage.getItem('token')); // Ensure token is set
+  
     window.Echo = new Echo({
       broadcaster: 'pusher',
-      key: 'local', // Make sure this matches PUSHER_APP_KEY in your .env
-      cluster: 'mt1', // Ensure cluster matches your .env
-      wsHost: window.location.hostname, // Usually '127.0.0.1' for local
-      wsPort: 6001, // WebSocket port
-      forceTLS: false, // Disable TLS for local
-      disableStats: true, // Prevent sending usage statistics
+      key: '9e28377bbc0003448d60',
+      cluster: 'mt1',
+      forceTLS: false,
+      wsHost: "127.0.0.1",
+      wsPort: 6001,
+      disableStats: true,
+      authEndpoint: 'http://127.0.0.1:8000/broadcasting/auth',
       auth: {
         headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`, // Ensure the token is properly stored
+          Authorization: `Bearer ${token}`,
         },
       },
-      authEndpoint: `${REACT_APP_API_URL}/broadcasting/auth`, // Ensure REACT_APP_API_URL is set correctly
+      namespace: 'App.Events',
     });
   
-    window.Echo.private(`private-event.${userId}`) // Make sure userId is defined
-      .listen('PrivateEventTest', (event) => {
-        console.log('WebSocket data received:', event); // Debug event data
+    window.Echo.private(`messages.${userId}`)
+      .listen('MessageSent', (e) => {
+        // Debounce logic can be applied here if messages come in rapidly
+        console.log('Private Message:', e);
       });
   
-    // Cleanup WebSocket connection when component unmounts
-    return () => {
-      window.Echo.leave(`private-event.${userId}`);
-    };
-  }, [userId]); // Ensure userId is properly available and passed
+    window.Echo.connector.pusher.connection.bind('state_change', (states) => {
+      console.log(`Connection state changed from ${states.previous} to ${states.current}`);
+    });
   
+    window.Echo.connector.pusher.connection.bind('error', (error) => {
+      console.error("WebSocket error: ", error);
+    });
+  
+    return () => {
+      // Cleanup when component unmounts
+      window.Echo.leaveChannel(`messages.${userId}`);
+    };
+  }, []);
   
   return (
     <div className='container-fluid'>
-        <div className="row">
-           {/* <Navbar/> */}
-           <Sidebar/>
-        </div>
+      <div className="row">
+        {/* <Navbar /> */}
+        <Sidebar />
+      </div>
     </div>
-  )
+  );
 }
 
-export default Dashboard
+export default Dashboard;

@@ -26,28 +26,40 @@ window.Pusher = Pusher;
 function App() {
   const [eventData, setEventData] = useState(null);
  
-  // useEffect(() => {
-  //   window.Echo = new Echo({
-  //     broadcaster: 'pusher',
-  //     key: 'local', // Use your Pusher key from the .env
-  //     cluster: 'mt1', // Add the Pusher cluster (e.g., 'mt1', replace with your actual cluster)
-  //     wsHost: window.location.hostname,
-  //     wsPort: 6001, // WebSocket port (matches the .env configuration)
-  //     forceTLS: false, // Disable TLS for local development
-  //     disableStats: true, // Disable Pusher stats collection
-  //     enabledTransports: ['ws', 'wss'] // Only use WebSocket transports
-  //   });
+//   useEffect(() => {
+//     // Initialize Laravel Echo with Pusher
+//     const echo = new Echo({
+//         broadcaster: 'pusher',
+//         key: '9e28377bbc0003448d60', // Replace with your Pusher App Key
+//         cluster: 'mt1',
+//         wsHost: window.location.hostname,
+//         wsPort: 6001,
+//         forceTLS: false,
+//         disableStats: true,
+//         authEndpoint: `http://localhost:8000/api/broadcasting/auth`,
+//         auth: {
+//             headers: {
+//                 Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`, // Use token for private channels
+//             },
+//         },
+//     });
+//     const userId=JSON.parse(localStorage.getItem('userId'));
 
-  //   window.Echo.channel('chat-data') // Replace with your channel name
-  //     .listen('NotificationTest', (e) => {
-  //       console.log('WebSocket event data:', e);
-  //     });
+//     // Listen to a private channel
+//     echo.private(`private-event.${userId}`)
+//         .listen('PrivateEventTest', (event) => {
+//             console.log('WebSocket data received:', event);
+//             alert('Private message received: ' + event);
+//         })
+//         .error((error) => {
+//             console.error('WebSocket error:', error);
+//         });
 
-  //   // Cleanup WebSocket connection on component unmount
-  //   return () => {
-  //     window.Echo.leave('chat-data');
-  //   };
-  // }, []);
+//     return () => {
+//         // Disconnect on component unmount
+//         echo.disconnect();
+//     };
+// }, []);
   // after refresh get all auth user permission 
   const token = useSelector((state) => state.auth.token)
   const [loading, setLoading] = useState(!!token);
