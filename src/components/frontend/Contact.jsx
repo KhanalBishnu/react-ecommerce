@@ -3,7 +3,7 @@ import { Container, Typography, TextField, Button, Box } from '@mui/material';
 
 const Contact = () => {
   return (
-    <Container sx={{ mt: 4 }}>
+    <Container sx={{ mt: 4, mb: 4, p: 2 }}>
       <Box sx={{ textAlign: 'center' }}>
         <Typography variant="h4" gutterBottom>
           Contact Us

@@ -7,7 +7,7 @@ import Product from './Product';
 import About from './About';
 import Contact from './Contact';
 
-const NavbarWithDrawer = () => {
+const Home = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const cart = [1, 2, 3]; // Example cart data (replace with real state later)
 
@@ -21,4 +21,4 @@ const NavbarWithDrawer = () => {
   );
 };
 
-export default NavbarWithDrawer;
+export default Home;
