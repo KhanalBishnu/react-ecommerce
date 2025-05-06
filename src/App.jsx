@@ -20,6 +20,9 @@ import CategoryProduct from './components/auth/admin/categoryProduct/CategoryPro
 import Home from './components/frontend/Home'
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
+import About from './components/frontend/About'
+import Contact from './components/frontend/Contact'
+import Product from './components/frontend/Product'
 
 
 window.Pusher = Pusher;
@@ -67,7 +70,7 @@ function App() {
   const navigate=useNavigate()
   useEffect(() => {
     if (token) {
-      getOwnPermission()
+      // getOwnPermission()
     }
   }, [])
   const getOwnPermission = async () => {
@@ -102,6 +105,9 @@ function App() {
       <Route path='/' element={<Home />} />
       <Route path='/login' element={<Login />} />
       <Route path='/sign-up' element={<Signup />} />
+      <Route path='/products' element={<Product />} />
+      <Route path='/about' element={<About />} />
+      <Route path='/contact' element={<Contact />} />
       <Route path='/dashboard' element={<ProtectedRoute Component={Dashboard} />}>
         <Route path='home' element={<AdminHome />}>
         </Route>

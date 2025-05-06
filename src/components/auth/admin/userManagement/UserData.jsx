@@ -116,7 +116,7 @@ const UserData = () => {
                                         <StyledTableCell align="right">{user.name}</StyledTableCell>
                                         <StyledTableCell align="right">{user.email}</StyledTableCell>
                                         <StyledTableCell align="right">
-                                            <Button onClick={() => handleEditUser(user)} sx={{ marginRight: "2px" }} variant="outlined" startIcon={<EditIcon />}>
+                                            <Button onClick={() => handleEhoditUser(user)} sx={{ marginRight: "2px" }} variant="outlined" startIcon={<EditIcon />}>
                                                 Edit
                                             </Button>
                                             <Button variant="outlined" onClick={() => handleDelete(user.id)} color="error" startIcon={<DeleteIcon />}>
