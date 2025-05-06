@@ -23,6 +23,7 @@ import Pusher from 'pusher-js';
 import About from './components/frontend/About'
 import Contact from './components/frontend/Contact'
 import Product from './components/frontend/Product'
+import NavbarWithDrawer from './components/frontend/Home'
 
 
 window.Pusher = Pusher;
@@ -102,6 +103,8 @@ function App() {
 <>
 <ToastContainer/>
     <Routes>
+    <NavbarWithDrawer />
+
       <Route path='/' element={<Home />} />
       <Route path='/login' element={<Login />} />
       <Route path='/sign-up' element={<Signup />} />

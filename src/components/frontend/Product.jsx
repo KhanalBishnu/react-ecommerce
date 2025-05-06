@@ -1,11 +1,12 @@
 import React from 'react';
 import { Container, Typography, Grid, Card, CardContent, CardMedia, Button } from '@mui/material';
 
-const products = [
-  { id: 1, name: 'Product 1', price: '$29.99', image: 'https://via.placeholder.com/300' },
-  { id: 2, name: 'Product 2', price: '$49.99', image: 'https://via.placeholder.com/300' },
-  { id: 3, name: 'Product 3', price: '$19.99', image: 'https://via.placeholder.com/300' },
-];
+const products = Array.from({ length: 20 }, (_, i) => ({
+  id: i + 1,
+  name: `Product ${i + 1}`,
+  price: `$${(Math.random() * 100 + 10).toFixed(2)}`,
+  image: 'https://via.placeholder.com/300'
+}));
 
 const Product = () => {
   return (
@@ -15,8 +16,8 @@ const Product = () => {
       </Typography>
       <Grid container spacing={4}>
         {products.map((product) => (
-          <Grid item xs={12} sm={6} md={4} key={product.id}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <Grid item xs={12} sm={6} md={3} key={product.id}>
+            <Card>
               <CardMedia
                 component="img"
                 image={product.image}
@@ -25,10 +26,8 @@ const Product = () => {
               />
               <CardContent>
                 <Typography variant="h6">{product.name}</Typography>
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                  {product.price}
-                </Typography>
-                <Button variant="contained" color="primary" fullWidth>
+                <Typography variant="body2">{product.price}</Typography>
+                <Button variant="contained" color="primary" fullWidth sx={{ mt: 1 }}>
                   Add to Cart
                 </Button>
               </CardContent>
